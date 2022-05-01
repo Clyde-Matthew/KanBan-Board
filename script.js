@@ -43,27 +43,6 @@ function clickDelete(e) {
     updateDOM();
 }
  
-// event listener for right click to bring up delete menu
-scope.addEventListener("contextmenu", (event) => {
-  event.preventDefault();
- target = event.target
-  const { clientX: mouseX, clientY: mouseY } = event;
-  contextMenu.style.top = `${mouseY}px`;
-  contextMenu.style.left = `${mouseX}px`;
-  contextMenu.classList.add("visible");
-
-  setTimeout(() => {
-    contextMenu.classList.remove("visible");
-  }, 2000);
-
-});
-
-scope.addEventListener("click", (e) => {
-  if (e.target.offsetParent != contextMenu) {
-    contextMenu.classList.remove("visible");
-  }
-});
-
 // editFunction - double click to edit item
 function edit(e){
   e.target.contentEditable = true;
@@ -119,7 +98,24 @@ function createItemEl(columnEl, column, item, index) {
   listEl.draggable = true;
   listEl.setAttribute("onfocusout", `updateItem(${index}, ${column})`);
   listEl.setAttribute("ondragstart", "drag(event)");
-  
+  listEl.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    target = e.target;
+    const { clientX: mouseX, clientY: mouseY } = e;
+    contextMenu.style.top = `${mouseY}px`;
+    contextMenu.style.left = `${mouseX}px`;
+    contextMenu.classList.add("visible");
+
+    setTimeout(() => {
+      contextMenu.classList.remove("visible");
+    }, 2000);
+  });
+  listEl.addEventListener("click", (e) => {
+    if (e.target.offsetParent != contextMenu) {
+      contextMenu.classList.remove("visible");
+    }
+  });
+  columnEl.appendChild(listEl);
   listEl.contentEditable = false;
   listEl.setAttribute("column", ` ${column}`);
   
